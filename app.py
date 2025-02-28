@@ -6,6 +6,7 @@ import sys
 import qrcode
 from gui.ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6 import QtGui
 
 class MainApp(QMainWindow):
     def __init__(self):
@@ -18,7 +19,6 @@ class MainApp(QMainWindow):
         self.pass_profile = ""
         self.directorio = os.path.join(os.environ['USERPROFILE'], "Documents", "Redes Guardadas")
 
-        self.ui.buttonQR.clicked.connect(self.generate_qr_code)
         self.ui.listNetworks.currentIndexChanged.connect(lambda: self.search_profiles(self.ui.listNetworks.currentText()))
         self.ui.buttonGallery.clicked.connect(lambda: webbrowser.open(f"file://{self.directorio}"))
 
@@ -50,9 +50,9 @@ class MainApp(QMainWindow):
         else:
             password = re.search("Contenido de la clave  : (.*)\r", profile_info_pass)
             self.ui.inputPassword.setText(f"{password.group(1) if password else 'N/A'}")
-            self.ui.inputNetwork.setText(f"{name}")
             self.ssid_profile = name
             self.pass_profile = password.group(1) if password else ''
+            self.generate_qr_code()
 
     # Mensaje de error
     def setError(self, mensaje):
@@ -74,7 +74,7 @@ class MainApp(QMainWindow):
             img_path = os.path.join(self.directorio, file_name)
             img = qr.make_image()
             img.save(img_path)
-            img.show()
+            self.ui.labelQR.setPixmap(QtGui.QPixmap(img_path))
         else:
             self.setError('Debe seleccionar una red antes de generar el QR')
 
