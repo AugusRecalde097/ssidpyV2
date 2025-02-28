@@ -76,7 +76,7 @@ class MainApp(QMainWindow):
             img.save(img_path)
             img.show()
         else:
-            self.setError('Debe seleccionar una red antes de generar el QRCode')
+            self.setError('Debe seleccionar una red antes de generar el QR')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
